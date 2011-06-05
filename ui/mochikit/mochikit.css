@@ -1,0 +1,35 @@
+/* body {background: white url(mochi_logo.png) -16px 0 no-repeat; color: black;} */
+div#mochikit_logo {
+    background: transparent url(mochi_logo.png) 0 0 no-repeat;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    width: 160px;
+    height: 85px;
+    z-index: 1000;
+}
+
+div#header {
+    background: transparent;
+    border-bottom: 1px solid black;
+}
+
+div#footer {
+    background: transparent;
+    border-top: 1px solid black;
+}
+
+body {
+    color: rgb(92, 93, 95);
+    font-family: Verdana,Helvetica,sans-serif;
+}
+
+.slide h1, #slide0 h1, #footer h1 {
+    background-color: transparent;
+    color: rgb(75, 129, 188);
+    font-family: Trebuchet MS,verdana,sans-serif;
+}
+
+#controls #navLinks a { background: transparent; }
+#controls #navList #jumplist { background: transparent; }
+.keyoff { color: rgb(200, 200, 200); }

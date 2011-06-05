@@ -1,0 +1,6 @@
+\definecolor{rrblitbackground}{rgb}{0.0, 0.0, 0.0}
+
+\title[Practical Erlang testing techniques]{Practical Erlang testing techniques}
+\author[Bob Ippolito]{Bob Ippolito\\Mochi Media, Inc.}
+\institute[Erlang Factory London 2011]{Erlang Factory London 2011}
+\date{June 9, 2011}
