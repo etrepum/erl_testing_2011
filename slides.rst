@@ -243,8 +243,9 @@ meck usage (constants)
 
     statebox_test() ->
         meck:new(statebox_clock),
-        meck:expect(statebox_clock, timestamp, 0, ?WHENEVER),
-        …
+        meck:expect(statebox_clock,
+            timestamp, 0, ?WHENEVER),
+        […],
         meck:unload(statebox_clock).
 
 meck usage (funs)
@@ -258,7 +259,7 @@ meck usage (funs)
         meck:new(mochierl_util),
         meck:expect(mochierl_util, now_to_msec,
             fun() -> 55000 + 60000 * 123345 end),
-        …
+        […],
         meck:unload(mochierl_util).
 
 
@@ -269,16 +270,16 @@ meck fixture for EUnit
 
 ::
 
-    meck_setup(Modules) -> meck:new(Modules), Modules.
-
-    meck_cleanup(Modules) -> meck:unload(Modules).
+    meck_setup(Modules) ->
+        meck:new(Modules),
+        Modules.
 
     meck_fixture_test_() ->
         {foreach,
          fun meck_setup/0,
-         fun meck_cleanup/1,
+         fun meck:unload/1,
          [{"meck test…",
-           …}]}.
+           […]}]}.
 
 meck caveat: OTP modules
 ========================
@@ -324,7 +325,14 @@ meck workaround: side effects
             [1, 2, 3, 4, 5]),
         ?assertEqual(1, statebox:clock()),
         ?assertEqual(2, statebox:clock()),
-        …
+        ok.
+
+meck alternatives
+=================
+
+* erlymock is probably the only worthy "competitor" for meck
+* effigy, emock are unmaintained and do not work with cover
+* We only have experience with effigy (legacy code) and meck
 
 PropEr
 ======
@@ -346,12 +354,9 @@ PropEr EUnit Skeleton
 
     %% EUnit tests
     proper_module_test() ->
-        ?assertEqual([], proper:module(?MODULE, [long_result])).
-
-    proper_specs_test() ->
-        %% This may need to be modified in some modules to test
-        %% specific MFAs.
-        ?assertEqual([], proper:check_specs(?MODULE, [long_result])).
+        ?assertEqual(
+            [],
+            proper:module(?MODULE, [long_result])).
 
 
 PropEr Specs Example
@@ -368,6 +373,10 @@ PropEr Specs Example
             Pos when Pos > 0 -> T + 1;
             _ -> T
         end.
+
+    int_ceil_spec_test() ->
+       proper:check_spec({?MODULE, int_ceil, 1})
+
 
 PropEr Property Example
 =======================
