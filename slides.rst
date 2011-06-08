@@ -9,7 +9,7 @@ Practical Erlang testing techniques
 ===================================
 
 :Author:
-    Bob Ippolito (@etrepum)
+    Bob Ippolito (`@etrepum`_)
 :Date:
     June 2011
 :Venue:
