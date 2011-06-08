@@ -494,7 +494,7 @@ Jenkins - Setup
 ===============
 
 * Install Jenkins: ``brew install jenkins``
-* Start Jenknis: ``java -jar /[…]/jenkins.war``
+* Start Jenknis: ``java -jar […]/jenkins.war``
 * http://127.0.0.1:8080/
 
 Jenkins - Install Plugins
