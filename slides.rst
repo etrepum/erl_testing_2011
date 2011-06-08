@@ -393,7 +393,7 @@ PropEr Property Example
         ?FORALL(F, float(),
             begin F =:= list_to_float(digits(F)) end).
 
-Proper Generator Example
+PropEr Generator Example
 ========================
 
 .. class:: erlang
@@ -481,3 +481,88 @@ dialyzer caveats
   generate and specific to an OTP release
 * We'd use it a lot more if it weren't for the hassle of PLTs
 
+Jenkins
+=======
+
+* Jenkins CI is the leading open-source continuous integration server
+* Used to be called Hudson
+
+Jenkins - Setup
+===============
+
+* Install Jenkins: ``brew install jenkins``
+* Start Jenknis: ``java -jar /[…]/jenkins.war``
+* http://127.0.0.1:8080/
+
+Jenkins - Install Plugins
+=========================
+
+* Manage Jenkins » Manage Plugins » Available
+
+  * Git plugin
+  * Warnings Plugin
+  * xUnit Plugin
+
+* Schedule Restart
+
+Jenkins - New Job
+=================
+
+* New Job
+* Build a free-style software project
+
+Jenkins - SCM
+=============
+
+* Git
+
+  * URL of repository: ``git://github.com/mochi/statebox.git``
+  * Branches to build: ``master``
+
+Jenkins - Build
+================================
+
+* Build Triggers
+
+  * Poll SCM: ``*/1 * * * *``
+
+* Add build steps:
+
+  * Execute shell: ``make clean``
+  * Execute shell: ``make all test``
+
+Jenkins - Post-build Actions
+============================
+
+* Scan for compiler warnings
+
+  * Scan console log
+  * Parsers: Erlang Compiler
+
+* Publish JUnit test result report
+
+  * XMLs: ``**/TEST-*.xml``
+
+Jenkins - Watch a build
+=======================
+
+* Build Now
+* Click entry in Build History
+* Console Output
+
+Jenkins alternatives
+====================
+
+* Use whatever works for you, we like Jenkins
+* Buildbot
+* Continuum
+* Moebius?
+
+Questions?
+==========
+
+* Twitter: `@etrepum`_
+* Mochi Media: http://www.mochimedia.com/
+* Slides: http://etrepum.github.com/erl_testing_2011
+
+.. _`@etrepum`: http://twitter.com/etrepum
