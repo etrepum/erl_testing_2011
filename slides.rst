@@ -79,17 +79,16 @@ rebar.config
 
 ::
 
-    {erl_opts, [fail_on_warning,
-                debug_info]}.
+    {erl_opts, [fail_on_warning, debug_info]}.
     {cover_enabled, true}.
     {clean_files, ["*.eunit", "ebin/*.beam"]}.
     {eunit_opts, [verbose,
-        {report,{eunit_surefire,[{dir,"."}]}}]}.
+       {report, {eunit_surefire, [{dir, "."}]}}]}.
 
 rebarized Makefile
 ==================
 
-.. class:: bash
+.. class:: plain
 
 ::
 
@@ -144,9 +143,9 @@ EUnit test
 ::
 
     inc_0_test() ->
-        ?assertEqual(
-            1,
-            increment(0)).
+      ?assertEqual(
+        1,
+        increment(0)).
 
 EUnit test generator
 ====================
@@ -156,10 +155,12 @@ EUnit test generator
 ::
 
     inc_test_() ->
-        [{"inc by 0",
-          fun () -> ?assertEqual(1, increment(0)) end},
-         {"inc by 1",
-          ?_test(?assertEqual(2, increment(1)))}].
+      [{"inc by 0",
+        fun () ->
+            ?assertEqual(1, increment(0))
+        end},
+       {"inc by 1",
+        ?_test(?assertEqual(2, increment(1)))}].
 
 EUnit fixture
 =============
@@ -173,11 +174,11 @@ EUnit fixture
     inc_cleanup(setup_return_value) -> ok.
 
     inc_fixture_test_() ->
-        {foreach,
-         fun inc_setup/0,
-         fun inc_cleanup/1,
-         [{"inc by 0",
-           ?_test(?assertEqual(1, increment(0)))}]}.
+      {foreach,
+       fun inc_setup/0,
+       fun inc_cleanup/1,
+       [{"inc by 0",
+         ?_test(?assertEqual(1, increment(0)))}]}.
 
 running EUnit tests
 ===================
@@ -189,14 +190,14 @@ running EUnit tests
     $ make test
     ==> inc (eunit)
     Compiled src/inc.erl
-    ======================== EUnit ========================
+    ================ EUnit ================
     module 'inc'
       inc: inc_0_test...ok
       […]
      [done in 0.012 s]
-    =======================================================
+    =======================================
       All 4 tests passed.
-    Cover analysis: /Users/bob/tmp/inc/.eunit/index.html
+    Cover analysis: […]/.eunit/index.html
 
 EUnit alternatives
 ==================
@@ -242,11 +243,11 @@ meck usage (constants)
     -define(WHENEVER, 1303513575954).
 
     statebox_test() ->
-        meck:new(statebox_clock),
-        meck:expect(statebox_clock,
-            timestamp, 0, ?WHENEVER),
-        […],
-        meck:unload(statebox_clock).
+      meck:new(statebox_clock),
+      meck:expect(statebox_clock,
+        timestamp, 0, ?WHENEVER),
+      […],
+      meck:unload(statebox_clock).
 
 meck usage (funs)
 =================
@@ -256,11 +257,11 @@ meck usage (funs)
 ::
 
     next_minute_test() ->
-        meck:new(mochierl_util),
-        meck:expect(mochierl_util, now_to_msec,
-            fun() -> 55000 + 60000 * 123345 end),
-        […],
-        meck:unload(mochierl_util).
+      meck:new(mochierl_util),
+      meck:expect(mochierl_util, now_to_msec,
+        fun() -> 55000 + 60000 * 123345 end),
+      […],
+      meck:unload(mochierl_util).
 
 
 meck fixture for EUnit
@@ -271,15 +272,15 @@ meck fixture for EUnit
 ::
 
     meck_setup(Modules) ->
-        meck:new(Modules),
-        Modules.
+      meck:new(Modules),
+      Modules.
 
     meck_fixture_test_() ->
-        {foreach,
-         fun meck_setup/0,
-         fun meck:unload/1,
-         [{"meck test…",
-           […]}]}.
+      {foreach,
+       fun meck_setup/0,
+       fun meck:unload/1,
+       [{"meck test…",
+         […]}]}.
 
 meck caveat: OTP modules
 ========================
@@ -302,7 +303,7 @@ meck workaround: OTP modules
     %% @doc …
     -spec timestamp() -> integer().
     timestamp() ->
-        now_to_msec(os:timestamp()).
+      now_to_msec(os:timestamp()).
 
 meck caveat: side effects
 =========================
@@ -320,12 +321,12 @@ meck workaround: side effects
 ::
 
     now_test() ->
-        meck:new(statebox_clock),
-        meck:sequence(statebox_clock, clock, 0,
-            [1, 2, 3, 4, 5]),
-        ?assertEqual(1, statebox:clock()),
-        ?assertEqual(2, statebox:clock()),
-        ok.
+      meck:new(statebox_clock),
+      meck:sequence(statebox_clock, clock, 0,
+        [1, 2, 3, 4, 5]),
+      ?assertEqual(1, statebox:clock()),
+      ?assertEqual(2, statebox:clock()),
+      ok.
 
 meck alternatives
 =================
@@ -354,9 +355,9 @@ PropEr EUnit Skeleton
 
     %% EUnit tests
     proper_module_test() ->
-        ?assertEqual(
-            [],
-            proper:module(?MODULE, [long_result])).
+      ?assertEqual(
+        [],
+        proper:module(?MODULE, [long_result])).
 
 
 PropEr Specs Example
@@ -368,14 +369,14 @@ PropEr Specs Example
 
     -spec int_ceil(float()) -> integer().
     int_ceil(X) ->
-        T = trunc(X),
-        case (X - T) of
-            Pos when Pos > 0 -> T + 1;
-            _ -> T
-        end.
+      T = trunc(X),
+      case (X - T) of
+        Pos when Pos > 0 -> T + 1;
+        _ -> T
+      end.
 
     int_ceil_spec_test() ->
-       proper:check_spec({?MODULE, int_ceil, 1})
+      proper:check_spec({?MODULE, int_ceil, 1})
 
 
 PropEr Property Example
@@ -390,8 +391,8 @@ PropEr Property Example
 
     %% In the EUnit test block
     prop_digits_exact() ->
-        ?FORALL(F, float(),
-            begin F =:= list_to_float(digits(F)) end).
+      ?FORALL(F, float(),
+        begin F =:= list_to_float(digits(F)) end).
 
 PropEr Generator Example
 ========================
@@ -401,16 +402,16 @@ PropEr Generator Example
 ::
 
     unichar() ->
-        union([integer(0, 16#d7ff),
-               integer(16#e000, 16#10ffff)]).
+      union([integer(0, 16#d7ff),
+             integer(16#e000, 16#10ffff)]).
 
     utf8_binary() ->
-        ?LET(L, list(unichar()),
-             unicode:characters_to_binary(L, utf8)).
+      ?LET(L, list(unichar()),
+        unicode:characters_to_binary(L, utf8)).
 
     prop_valid_utf8_bytes_valid() ->
-        ?FORALL(B, utf8_binary(),
-            begin B =:= valid_utf8_bytes(B) end).
+      ?FORALL(B, utf8_binary(),
+        begin B =:= valid_utf8_bytes(B) end).
 
 PropEr Caveats
 ==============
@@ -444,11 +445,12 @@ dialyzer plt building
 ::
 
     $ dialyzer --build_plt \
-        --output_plt .dialyzer-R14B01.plt \
-        --apps kernel stdlib sasl erts ssl tools os_mon \
-          runtime_tools crypto inets xmerl webtool snmp \
-          public_key mnesia eunit syntax_tools compiler \
-          ./deps/*/ebin
+      --output_plt .dialyzer-R14B01.plt \
+      --apps kernel stdlib sasl erts ssl \
+        tools os_mon runtime_tools crypto \
+        inets xmerl webtool snmp public_key \
+        mnesia eunit syntax_tools compiler \
+        ./deps/*/ebin
 
 dialyzer analysis
 =================
@@ -458,11 +460,11 @@ dialyzer analysis
 ::
 
     $ dialyzer ./ebin --plt .dialyzer-R14B01.plt \
-        -Wunmatched_returns \
-        -Werror_handling \
-        -Wrace_conditions \
-        -Wbehaviours \
-        -Wunderspecs
+      -Wunmatched_returns \
+      -Werror_handling \
+      -Wrace_conditions \
+      -Wbehaviours \
+      -Wunderspecs
 
 dialyzer analysis notes
 =======================

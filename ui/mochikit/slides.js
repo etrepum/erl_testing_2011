@@ -572,6 +572,7 @@ document.write([
     '<script src="ui/syntaxhighlighter_3.0.83/scripts/shCore.js"',
     '<script src="ui/syntaxhighlighter_3.0.83/scripts/shBrushBash.js"',
     '<script src="ui/syntaxhighlighter_3.0.83/scripts/shBrushErlang.js"',
+    '<script src="ui/syntaxhighlighter_3.0.83/scripts/shBrushPlain.js"',
     ''].join(' type="text/javascript"></script>') +
     '<link type="text/css" rel="stylesheet" ' +
         'href="ui/syntaxhighlighter_3.0.83/styles/shCoreDefault.css"/>');
