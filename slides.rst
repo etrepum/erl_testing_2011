@@ -271,7 +271,8 @@ meck fixture for EUnit
 
 ::
 
-    meck_setup(Modules) ->
+    meck_setup() ->
+      Modules = [mocked_modules, …],
       meck:new(Modules),
       Modules.
 
