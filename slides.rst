@@ -559,6 +559,17 @@ Jenkins alternatives
 * Continuum
 * Moebius?
 
+Wrap-up
+=======
+
+* Use rebar
+* Adding EUnit tests is easy
+* Use cover to gauge progress (100% is #winning)
+* meck can help you test non-functional code
+* PropEr / QuickCheck is REALLY GREAT
+* Please improve the dialyzer toolchain
+* Setting up Continuous Integration is easy
+
 Questions?
 ==========
 
