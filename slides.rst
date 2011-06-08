@@ -576,8 +576,9 @@ Wrap-up
 Questions?
 ==========
 
-* Twitter: `@etrepum`_
+* Twitter: `@etrepum`_ (and/or `@dreid`_)
 * Mochi Media: http://www.mochimedia.com/
 * Slides: http://etrepum.github.com/erl_testing_2011
 
 .. _`@etrepum`: http://twitter.com/etrepum
+.. _`@dreid`: http://twitter.com/dreid
