@@ -553,6 +553,7 @@ function startup() {
 		document.onkeypress = s5_trap;
 		document.onclick = clicker;
 	}
+	XXX_syntaxhighlighter_init();
 }
 
 // XXX: globals it wants
@@ -566,5 +567,23 @@ window.onresize = function(){setTimeout('fontScale()', 50);}
 
 })();
 
-document.write('<script src="ui/mochikit/MochiKit/MochiKit.js"' + 
-    ' type="text/javascript"></script>');
+document.write([
+    '<script src="ui/mochikit/MochiKit/MochiKit.js"',
+    '<script src="ui/syntaxhighlighter_3.0.83/scripts/shCore.js"',
+    '<script src="ui/syntaxhighlighter_3.0.83/scripts/shBrushBash.js"',
+    '<script src="ui/syntaxhighlighter_3.0.83/scripts/shBrushErlang.js"',
+    ''].join(' type="text/javascript"></script>') +
+    '<link type="text/css" rel="stylesheet" ' +
+        'href="ui/syntaxhighlighter_3.0.83/styles/shCoreDefault.css"/>');
+
+function XXX_syntaxhighlighter_init() {
+    SyntaxHighlighter.defaults.toolbar = false;
+    // SyntaxHighlighter.defaults.gutter = false;
+    var regex = /([^ ]+) literal-block/;
+    forEach($$('pre.literal-block'), function (node) {
+        node.className = node.className.replace(regex, ';brush: $1'
+            ).replace(/\blight /, ';light: true');
+        SyntaxHighlighter.highlight(null, node);
+    });
+    
+};
