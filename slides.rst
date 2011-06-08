@@ -503,6 +503,7 @@ Jenkins - Install Plugins
   * Warnings Plugin
   * xUnit Plugin
 
+* Install
 * Schedule Restart
 
 Jenkins - New Job
