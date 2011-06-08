@@ -549,43 +549,9 @@ function startup() {
 		if (defaultView == 'outline') {
 			toggle();
 		}
-
-        var is_using_s5 = true;
-        
-        // XXX: mochi stuff
-        function e_wrap(fn) {
-            return function (e) {
-                if (e.type() == "keyup" && 
-                    (e.modifier().ctrl || e.modifier().alt) && 
-                        e.key().string == "KEY_I") {
-                    is_using_s5 = !is_using_s5;
-                    logDebug("Toggled interactive mode " +
-                        (is_using_s5 ? "off" : "on"));
-                    e.stop();
-                    return;
-                }
-                if (!is_using_s5) return;
-
-                var res;
-                if (window.event) {
-                    res = fn();
-                } else {
-                    res = fn(e.event());
-                }
-                if (!res) {
-                    e.stop();
-                }
-            }
-        };
-                    
-        connect(document, 'onkeyup', e_wrap(s5_keys));
-        connect(document, 'onkeypress', e_wrap(s5_trap));
-        connect(document, 'onclick', e_wrap(clicker));
-        /*
 		document.onkeyup = s5_keys;
 		document.onkeypress = s5_trap;
 		document.onclick = clicker;
-        */
 	}
 }
 
