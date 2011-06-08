@@ -391,9 +391,7 @@ PropEr Property Example
     %% In the EUnit test block
     prop_digits_exact() ->
         ?FORALL(F, float(),
-                begin
-                    F =:= list_to_float(digits(F))
-                end).
+            begin F =:= list_to_float(digits(F)) end).
 
 Proper Generator Example
 ========================
@@ -412,9 +410,7 @@ Proper Generator Example
 
     prop_valid_utf8_bytes_valid() ->
         ?FORALL(B, utf8_binary(),
-                begin
-                    B =:= valid_utf8_bytes(B)
-                end).
+            begin B =:= valid_utf8_bytes(B) end).
 
 PropEr Caveats
 ==============
@@ -432,3 +428,56 @@ PropEr Alternatives
   features. Free QuickCheck Mini also available.
 * Trifork QuickCheck (triq) - Free (Apache license) QuickCheck
   clone. Does not yet have the unique features in PropEr
+
+dialyzer
+========
+
+* a DIscrepancy AnalYZer for ERlang programs
+* Static analysis tool
+* Great at finding stupid mistakes
+
+dialyzer plt building
+=====================
+
+.. class:: bash
+
+::
+
+    $ dialyzer --build_plt \
+        --output_plt .dialyzer-R14B01.plt \
+        --apps kernel stdlib sasl erts ssl tools os_mon \
+          runtime_tools crypto inets xmerl webtool snmp \
+          public_key mnesia eunit syntax_tools compiler \
+          ./deps/*/ebin
+
+dialyzer analysis
+=================
+
+.. class:: bash
+
+::
+
+    $ dialyzer ./ebin --plt .dialyzer-R14B01.plt \
+        -Wunmatched_returns \
+        -Werror_handling \
+        -Wrace_conditions \
+        -Wbehaviours \
+        -Wunderspecs
+
+dialyzer analysis notes
+=======================
+
+* You may not want to turn on all of the warnings
+* You may want to disable other warnings
+* See `dialyzer(3)`_ for all options
+
+.. _`dialyzer(3)`: http://www.erlang.org/doc/man/dialyzer.html
+
+dialyzer caveats
+================
+
+* Building the initial PLT is slow, expect to wait 20+ minutes
+* Could use better tools to manage PLTs, they are expensive to
+  generate and specific to an OTP release
+* We'd use it a lot more if it weren't for the hassle of PLTs
+
