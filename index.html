@@ -1,0 +1,936 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.7: http://docutils.sourceforge.net/" />
+<meta name="version" content="S5 1.1" />
+<title>Practical Erlang testing techniques</title>
+<meta name="author" content="Bob Ippolito (&#64;etrepum)" />
+<meta name="date" content="June 2011" />
+<style type="text/css">
+
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 6253 2010-03-02 00:24:53Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left, object.align-left {
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right, object.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+img.align-center, .figure.align-center, object.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: left }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+<!-- configuration parameters -->
+<meta name="defaultView" content="slideshow" />
+<meta name="controlVis" content="hidden" />
+<!-- style sheet links -->
+<script src="ui/mochikit/slides.js" type="text/javascript"></script>
+<link rel="stylesheet" href="ui/mochikit/slides.css"
+      type="text/css" media="projection" id="slideProj" />
+<link rel="stylesheet" href="ui/mochikit/outline.css"
+      type="text/css" media="screen" id="outlineStyle" />
+<link rel="stylesheet" href="ui/mochikit/print.css"
+      type="text/css" media="print" id="slidePrint" />
+<link rel="stylesheet" href="ui/mochikit/opera.css"
+      type="text/css" media="projection" id="operaFix" />
+
+<style type="text/css">
+#currentSlide {display: none;}
+</style>
+</head>
+<body>
+<div class="layout">
+<div id="controls"></div>
+<div id="currentSlide"></div>
+<div id="header">
+
+</div>
+<div id="footer">
+<h1>Practical Erlang testing techniques</h1>
+
+</div>
+</div>
+<div class="presentation">
+<div class="slide" id="slide0">
+<h1 class="title">Practical Erlang testing techniques</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Author:</th>
+<td>Bob Ippolito (<a class="reference external" href="http://twitter.com/etrepum">&#64;etrepum</a>)</td></tr>
+<tr><th class="docinfo-name">Date:</th>
+<td>June 2011</td></tr>
+<tr class="field"><th class="docinfo-name">Venue:</th><td class="field-body">Erlang Factory London 2011</td>
+</tr>
+</tbody>
+</table>
+<!-- Definitions of interpreted text roles (classes) for S5/HTML data. -->
+<!-- This data file has been placed in the public domain. -->
+<!-- Colours
+======= -->
+<!-- Text Sizes
+========== -->
+<!-- Display in Slides (Presentation Mode) Only
+========================================== -->
+<!-- Display in Outline Mode Only
+============================ -->
+<!-- Display in Print Only
+===================== -->
+<!-- Display in Handout Mode Only
+============================ -->
+<!-- Incremental Display
+=================== -->
+<!-- colors -->
+<!-- =========================== -->
+<!-- general useful commands -->
+<!-- =========================== -->
+<!-- closed bracket -->
+<!-- =========================== -->
+<!-- example block -->
+<!-- =========================== -->
+<!-- alert block -->
+<!-- =========================== -->
+<!-- columns -->
+<!-- =========================== -->
+<script type="text/javascript">
+    addLoadEvent(function () {
+        appendChildNodes(document.body,
+            DIV({id: "mochikit_logo", 'class': 'draggable'}));
+    });
+</script>
+
+</div>
+<div class="slide" id="introduction">
+<h1>Introduction</h1>
+<img alt="img/yuno.png" class="center slideimage" src="img/yuno.png" />
+</div>
+<div class="slide" id="mochi-media-s-code">
+<h1>Mochi Media's Code</h1>
+<ul class="simple">
+<li>Substantial multi-language codebase</li>
+<li>Erlang code going back to 2006</li>
+<li>Did not always have good tests :(</li>
+</ul>
+</div>
+<div class="slide" id="doing-it-wrong">
+<h1>Doing It Wrong</h1>
+<ul class="simple">
+<li>Write code without tests or review</li>
+<li>Push to production branch</li>
+<li>Deploy</li>
+<li>Firefight [and repeat]</li>
+</ul>
+</div>
+<div class="slide" id="doing-it-better">
+<h1>Doing It Better</h1>
+<ul class="simple">
+<li>Write code, tests and docs</li>
+<li>Push to issue branch</li>
+<li>Review [and repeat]</li>
+<li>Merge to production branch</li>
+<li>Continuous Integration server runs tests (again)</li>
+<li>Deploy</li>
+</ul>
+</div>
+<div class="slide" id="cool-tools-for-testing">
+<h1>Cool Tools (for testing)</h1>
+<ul class="simple">
+<li>rebar</li>
+<li>EUnit</li>
+<li>cover</li>
+<li>meck</li>
+<li>PropEr</li>
+<li>dialyzer</li>
+<li>Jenkins</li>
+</ul>
+</div>
+<div class="slide" id="rebar">
+<h1>rebar</h1>
+<ul class="simple">
+<li>A sophisticated build-tool for Erlang projects that follows OTP
+principles</li>
+<li><a class="reference external" href="https://github.com/basho/rebar">https://github.com/basho/rebar</a></li>
+<li>Handles common build tasks</li>
+<li>Builds your .app from an .app.src</li>
+<li>Manages dependencies (somewhat)</li>
+</ul>
+</div>
+<div class="slide" id="rebar-src-yourapp-app-src">
+<h1>rebar src/yourapp.app.src</h1>
+<pre class="erlang literal-block">
+{application, yourapp,
+ [{description, &quot;...&quot;},
+  {vsn, &quot;1.2.3&quot;}]}.
+</pre>
+</div>
+<div class="slide" id="rebar-config">
+<h1>rebar.config</h1>
+<pre class="erlang literal-block">
+{erl_opts, [fail_on_warning, debug_info]}.
+{cover_enabled, true}.
+{clean_files, [&quot;*.eunit&quot;, &quot;ebin/*.beam&quot;]}.
+{eunit_opts, [verbose,
+   {report, {eunit_surefire, [{dir, &quot;.&quot;}]}}]}.
+</pre>
+</div>
+<div class="slide" id="rebarized-makefile">
+<h1>rebarized Makefile</h1>
+<pre class="plain literal-block">
+REBAR=`which rebar || ./rebar`
+all: deps compile
+deps:
+    &#64;$(REBAR) get-deps
+compile:
+    &#64;$(REBAR) compile
+test:
+    &#64;$(REBAR) skip_deps=true eunit
+clean:
+    &#64;$(REBAR) clean
+</pre>
+</div>
+<div class="slide" id="rebar-alternatives">
+<h1>rebar alternatives</h1>
+<ul class="simple">
+<li>In open source Erlang code, rebar seems to have already won</li>
+<li><a class="reference external" href="http://erlagner.org/">Agner</a> complements rebar, provides better package discovery and
+dependency management</li>
+<li>Other tools include CEAN, EPM, Sinan/Faxien but these seem unpopular</li>
+<li>Consolidation would be good here</li>
+</ul>
+</div>
+<div class="slide" id="eunit">
+<h1>EUnit</h1>
+<ul class="simple">
+<li>Ships with Erlang</li>
+<li>Easy to use</li>
+<li>Works well (enough) with Jenkins</li>
+</ul>
+</div>
+<div class="slide" id="eunit-boilerplate">
+<h1>EUnit boilerplate</h1>
+<pre class="erlang literal-block">
+-ifdef(TEST).
+-include_lib(&quot;eunit/include/eunit.hrl&quot;).
+
+%% TEST CODE HERE
+
+-endif.
+</pre>
+</div>
+<div class="slide" id="eunit-test">
+<h1>EUnit test</h1>
+<pre class="erlang literal-block">
+inc_0_test() -&gt;
+  ?assertEqual(
+    1,
+    increment(0)).
+</pre>
+</div>
+<div class="slide" id="eunit-test-generator">
+<h1>EUnit test generator</h1>
+<pre class="erlang literal-block">
+inc_test_() -&gt;
+  [{&quot;inc by 0&quot;,
+    fun () -&gt;
+        ?assertEqual(1, increment(0))
+    end},
+   {&quot;inc by 1&quot;,
+    ?_test(?assertEqual(2, increment(1)))}].
+</pre>
+</div>
+<div class="slide" id="eunit-fixture">
+<h1>EUnit fixture</h1>
+<pre class="erlang literal-block">
+inc_setup() -&gt; return_value_from_setup.
+
+inc_cleanup(setup_return_value) -&gt; ok.
+
+inc_fixture_test_() -&gt;
+  {foreach,
+   fun inc_setup/0,
+   fun inc_cleanup/1,
+   [{&quot;inc by 0&quot;,
+     ?_test(?assertEqual(1, increment(0)))}]}.
+</pre>
+</div>
+<div class="slide" id="running-eunit-tests">
+<h1>running EUnit tests</h1>
+<pre class="bash literal-block">
+$ make test
+==&gt; inc (eunit)
+Compiled src/inc.erl
+================ EUnit ================
+module 'inc'
+  inc: inc_0_test...ok
+  […]
+ [done in 0.012 s]
+=======================================
+  All 4 tests passed.
+Cover analysis: […]/.eunit/index.html
+</pre>
+</div>
+<div class="slide" id="eunit-alternatives">
+<h1>EUnit alternatives</h1>
+<ul class="simple">
+<li>Common Test also ships with OTP. Much more powerful, but also more
+complicated. We're not writing a lot of system tests yet, so we
+haven't explored this</li>
+<li>Yatsy is an alternative to Common Test used by Kreditor. Doesn't
+seem very popular</li>
+<li>etap is based on Perl's Test Anything Protocol. Not very popular</li>
+</ul>
+</div>
+<div class="slide" id="cover">
+<h1>cover</h1>
+<ul class="simple">
+<li>A Coverage Analysis Tool for Erlang</li>
+<li>Ships with Erlang</li>
+<li>Run by rebar eunit (with <tt class="docutils literal">{cover_enabled, true}.</tt>)</li>
+</ul>
+</div>
+<div class="slide" id="cover-html-output">
+<h1>cover html output</h1>
+<ul class="simple">
+<li>open <tt class="docutils literal">.eunit/index.html</tt> in a browser</li>
+<li>Lists analysed modules with module coverage</li>
+<li>100% is awesome, go for that</li>
+<li>Click on module name to see report</li>
+<li>Source lines not covered are colored red</li>
+</ul>
+</div>
+<div class="slide" id="meck">
+<h1>meck</h1>
+<ul class="simple">
+<li>A mocking library for Erlang</li>
+<li><a class="reference external" href="https://github.com/esl/meck">https://github.com/esl/meck</a></li>
+<li>Makes it possible to test non-functional code</li>
+<li>Can also be used to simplify dependencies</li>
+</ul>
+</div>
+<div class="slide" id="meck-usage-constants">
+<h1>meck usage (constants)</h1>
+<pre class="erlang literal-block">
+-define(WHENEVER, 1303513575954).
+
+statebox_test() -&gt;
+  meck:new(statebox_clock),
+  meck:expect(statebox_clock,
+    timestamp, 0, ?WHENEVER),
+  […],
+  meck:unload(statebox_clock).
+</pre>
+</div>
+<div class="slide" id="meck-usage-funs">
+<h1>meck usage (funs)</h1>
+<pre class="erlang literal-block">
+next_minute_test() -&gt;
+  meck:new(mochierl_util),
+  meck:expect(mochierl_util, now_to_msec,
+    fun() -&gt; 55000 + 60000 * 123345 end),
+  […],
+  meck:unload(mochierl_util).
+</pre>
+</div>
+<div class="slide" id="meck-fixture-for-eunit">
+<h1>meck fixture for EUnit</h1>
+<pre class="erlang literal-block">
+meck_setup() -&gt;
+  Modules = [mocked_modules, …],
+  meck:new(Modules),
+  Modules.
+
+meck_fixture_test_() -&gt;
+  {foreach,
+   fun meck_setup/0,
+   fun meck:unload/1,
+   [{&quot;meck test…&quot;,
+     […]}]}.
+</pre>
+</div>
+<div class="slide" id="meck-caveat-otp-modules">
+<h1>meck caveat: OTP modules</h1>
+<ul class="simple">
+<li>Modules that are &quot;stuck&quot; can't always be mocked</li>
+<li><tt class="docutils literal">code:unstick_mod/1</tt>, <tt class="docutils literal">code:stick_mod/1</tt> might work</li>
+<li>Better to just refactor with a proxy module</li>
+<li>For example, <tt class="docutils literal">statebox_clock:timestamp/0</tt> instead of <tt class="docutils literal">os:timestamp/0</tt></li>
+</ul>
+</div>
+<div class="slide" id="meck-workaround-otp-modules">
+<h1>meck workaround: OTP modules</h1>
+<pre class="erlang literal-block">
+-module(statebox_clock).
+-export([timestamp/0, now_to_msec/1]).
+
+%% &#64;doc …
+-spec timestamp() -&gt; integer().
+timestamp() -&gt;
+  now_to_msec(os:timestamp()).
+</pre>
+</div>
+<div class="slide" id="meck-caveat-side-effects">
+<h1>meck caveat: side effects</h1>
+<ul class="simple">
+<li>The output doesn't depend (only) on the input</li>
+<li>More than one call happens to this function in the test</li>
+<li>We have several hacky workarounds for this</li>
+<li>BUT good solution is in development (see github eproxus/meck)</li>
+</ul>
+</div>
+<div class="slide" id="meck-workaround-side-effects">
+<h1>meck workaround: side effects</h1>
+<pre class="erlang literal-block">
+now_test() -&gt;
+  meck:new(statebox_clock),
+  meck:sequence(statebox_clock, clock, 0,
+    [1, 2, 3, 4, 5]),
+  ?assertEqual(1, statebox:clock()),
+  ?assertEqual(2, statebox:clock()),
+  ok.
+</pre>
+</div>
+<div class="slide" id="meck-alternatives">
+<h1>meck alternatives</h1>
+<ul class="simple">
+<li>erlymock is probably the only worthy &quot;competitor&quot; for meck</li>
+<li>effigy, emock are unmaintained and do not work with cover</li>
+<li>We only have experience with effigy (legacy code) and meck</li>
+</ul>
+</div>
+<div class="slide" id="proper">
+<h1>PropEr</h1>
+<ul class="simple">
+<li>QuickCheck-inspired property-based testing tool</li>
+<li><a class="reference external" href="https://github.com/manopapad/proper">https://github.com/manopapad/proper</a></li>
+<li>You declare high-level properties, it generates the tests</li>
+<li>Great at finding edge cases</li>
+</ul>
+</div>
+<div class="slide" id="proper-eunit-skeleton">
+<h1>PropEr EUnit Skeleton</h1>
+<pre class="erlang literal-block">
+%% Before eunit.hrl include
+-include_lib(&quot;proper/include/proper.hrl&quot;).
+
+%% EUnit tests
+proper_module_test() -&gt;
+  ?assertEqual(
+    [],
+    proper:module(?MODULE, [long_result])).
+</pre>
+</div>
+<div class="slide" id="proper-specs-example">
+<h1>PropEr Specs Example</h1>
+<pre class="erlang literal-block">
+-spec int_ceil(float()) -&gt; integer().
+int_ceil(X) -&gt;
+  T = trunc(X),
+  case (X - T) of
+    Pos when Pos &gt; 0 -&gt; T + 1;
+    _ -&gt; T
+  end.
+
+int_ceil_spec_test() -&gt;
+  proper:check_spec({?MODULE, int_ceil, 1})
+</pre>
+</div>
+<div class="slide" id="proper-property-example">
+<h1>PropEr Property Example</h1>
+<pre class="erlang literal-block">
+-spec digits(float()) -&gt; string().
+digits(F) -&gt; […].
+
+%% In the EUnit test block
+prop_digits_exact() -&gt;
+  ?FORALL(F, float(),
+    begin F =:= list_to_float(digits(F)) end).
+</pre>
+</div>
+<div class="slide" id="proper-generator-example">
+<h1>PropEr Generator Example</h1>
+<pre class="erlang literal-block">
+unichar() -&gt;
+  union([integer(0, 16#d7ff),
+         integer(16#e000, 16#10ffff)]).
+
+utf8_binary() -&gt;
+  ?LET(L, list(unichar()),
+    unicode:characters_to_binary(L, utf8)).
+
+prop_valid_utf8_bytes_valid() -&gt;
+  ?FORALL(B, utf8_binary(),
+    begin B =:= valid_utf8_bytes(B) end).
+</pre>
+</div>
+<div class="slide" id="proper-caveats">
+<h1>PropEr Caveats</h1>
+<ul class="simple">
+<li>GPLv3 license might be complicated to integrate with your source</li>
+<li>It's a work in progress, no proper release yet</li>
+<li>Missing some useful features (improper lists, custom generators for
+automatic spec testing, etc.)</li>
+<li>Make sure to include PropEr hrl before EUnit (<tt class="docutils literal"><span class="pre">?LET</span></tt> macro conflict)</li>
+</ul>
+</div>
+<div class="slide" id="proper-alternatives">
+<h1>PropEr Alternatives</h1>
+<ul class="simple">
+<li>QuviQ QuickCheck - high quality commercial tool with many advanced
+features. Free QuickCheck Mini also available.</li>
+<li>Trifork QuickCheck (triq) - Free (Apache license) QuickCheck
+clone. Does not yet have the unique features in PropEr</li>
+</ul>
+</div>
+<div class="slide" id="dialyzer">
+<h1>dialyzer</h1>
+<ul class="simple">
+<li>a DIscrepancy AnalYZer for ERlang programs</li>
+<li>Static analysis tool</li>
+<li>Great at finding stupid mistakes</li>
+</ul>
+</div>
+<div class="slide" id="dialyzer-plt-building">
+<h1>dialyzer plt building</h1>
+<pre class="bash literal-block">
+$ dialyzer --build_plt \
+  --output_plt .dialyzer-R14B01.plt \
+  --apps kernel stdlib sasl erts ssl \
+    tools os_mon runtime_tools crypto \
+    inets xmerl webtool snmp public_key \
+    mnesia eunit syntax_tools compiler \
+    ./deps/*/ebin
+</pre>
+</div>
+<div class="slide" id="dialyzer-analysis">
+<h1>dialyzer analysis</h1>
+<pre class="bash literal-block">
+$ dialyzer ./ebin --plt .dialyzer-R14B01.plt \
+  -Wunmatched_returns \
+  -Werror_handling \
+  -Wrace_conditions \
+  -Wbehaviours \
+  -Wunderspecs
+</pre>
+</div>
+<div class="slide" id="dialyzer-analysis-notes">
+<h1>dialyzer analysis notes</h1>
+<ul class="simple">
+<li>You may not want to turn on all of the warnings</li>
+<li>You may want to disable other warnings</li>
+<li>See <a class="reference external" href="http://www.erlang.org/doc/man/dialyzer.html">dialyzer(3)</a> for all options</li>
+</ul>
+</div>
+<div class="slide" id="dialyzer-caveats">
+<h1>dialyzer caveats</h1>
+<ul class="simple">
+<li>Building the initial PLT is slow, expect to wait 20+ minutes</li>
+<li>Could use better tools to manage PLTs, they are expensive to
+generate and specific to an OTP release</li>
+<li>We'd use it a lot more if it weren't for the hassle of PLTs</li>
+</ul>
+</div>
+<div class="slide" id="jenkins">
+<h1>Jenkins</h1>
+<ul class="simple">
+<li>Jenkins CI is the leading open-source continuous integration server</li>
+<li>Used to be called Hudson</li>
+</ul>
+</div>
+<div class="slide" id="jenkins-setup">
+<h1>Jenkins - Setup</h1>
+<ul class="simple">
+<li>Install Jenkins: <tt class="docutils literal">brew install jenkins</tt></li>
+<li>Start Jenknis: <tt class="docutils literal">java <span class="pre">-jar</span> <span class="pre">[…]/jenkins.war</span></tt></li>
+<li><a class="reference external" href="http://127.0.0.1:8080/">http://127.0.0.1:8080/</a></li>
+</ul>
+</div>
+<div class="slide" id="jenkins-install-plugins">
+<h1>Jenkins - Install Plugins</h1>
+<ul class="simple">
+<li>Manage Jenkins » Manage Plugins » Available<ul>
+<li>Git plugin</li>
+<li>Warnings Plugin</li>
+<li>xUnit Plugin</li>
+</ul>
+</li>
+<li>Install</li>
+<li>Schedule Restart</li>
+</ul>
+</div>
+<div class="slide" id="jenkins-new-job">
+<h1>Jenkins - New Job</h1>
+<ul class="simple">
+<li>New Job</li>
+<li>Build a free-style software project</li>
+</ul>
+</div>
+<div class="slide" id="jenkins-scm">
+<h1>Jenkins - SCM</h1>
+<ul class="simple">
+<li>Git<ul>
+<li>URL of repository: <tt class="docutils literal"><span class="pre">git://github.com/mochi/statebox.git</span></tt></li>
+<li>Branches to build: <tt class="docutils literal">master</tt></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="jenkins-build">
+<h1>Jenkins - Build</h1>
+<ul class="simple">
+<li>Build Triggers<ul>
+<li>Poll SCM: <tt class="docutils literal">*/1 * * * *</tt></li>
+</ul>
+</li>
+<li>Add build steps:<ul>
+<li>Execute shell: <tt class="docutils literal">make clean</tt></li>
+<li>Execute shell: <tt class="docutils literal">make all test</tt></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="jenkins-post-build-actions">
+<h1>Jenkins - Post-build Actions</h1>
+<ul class="simple">
+<li>Scan for compiler warnings<ul>
+<li>Scan console log</li>
+<li>Parsers: Erlang Compiler</li>
+</ul>
+</li>
+<li>Publish JUnit test result report<ul>
+<li>XMLs: <tt class="docutils literal"><span class="pre">**/TEST-*.xml</span></tt></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="jenkins-watch-a-build">
+<h1>Jenkins - Watch a build</h1>
+<ul class="simple">
+<li>Build Now</li>
+<li>Click entry in Build History</li>
+<li>Console Output</li>
+</ul>
+</div>
+<div class="slide" id="jenkins-alternatives">
+<h1>Jenkins alternatives</h1>
+<ul class="simple">
+<li>Use whatever works for you, we like Jenkins</li>
+<li>Buildbot</li>
+<li>Continuum</li>
+<li>Moebius?</li>
+</ul>
+</div>
+<div class="slide" id="wrap-up">
+<h1>Wrap-up</h1>
+<ul class="simple">
+<li>Use rebar</li>
+<li>Adding EUnit tests is easy</li>
+<li>Use cover to gauge progress (100% is #winning)</li>
+<li>meck can help you test non-functional code</li>
+<li>PropEr / QuickCheck is REALLY GREAT</li>
+<li>Please improve the dialyzer toolchain</li>
+<li>Setting up Continuous Integration is easy</li>
+</ul>
+</div>
+<div class="slide" id="questions">
+<h1>Questions?</h1>
+<ul class="simple">
+<li>Twitter: <a class="reference external" href="http://twitter.com/etrepum">&#64;etrepum</a> (and/or <a class="reference external" href="http://twitter.com/dreid">&#64;dreid</a>)</li>
+<li>Mochi Media: <a class="reference external" href="http://www.mochimedia.com/">http://www.mochimedia.com/</a></li>
+<li>Slides: <a class="reference external" href="http://etrepum.github.com/erl_testing_2011">http://etrepum.github.com/erl_testing_2011</a></li>
+</ul>
+</div>
+</div>
+</body>
+</html>
