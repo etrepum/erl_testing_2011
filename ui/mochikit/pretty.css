@@ -117,3 +117,5 @@ tt.docutils {background-color: white;}
 li:after {content: " [" attr(class) "]"; color: #F88;}
 div:before {content: "[" attr(class) "]"; color: #F88;}
 */
+
+img.slideimage {margin: 20px;}

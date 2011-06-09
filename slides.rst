@@ -15,6 +15,13 @@ Practical Erlang testing techniques
 :Venue:
     Erlang Factory London 2011
 
+Introduction
+============
+
+.. class:: center slideimage
+
+.. image:: img/yuno.png
+
 Mochi Media's Code
 ==================
 
